@@ -1,21 +1,12 @@
 #!/usr/bin/python
 
-#
-#  finish login function X
-#  add menu loop X
-#  debug register, login and decrypt/encrypt functions X
-#  compile as exe then reverse engineer with IDA or x32dbg to find security flaws and fix if any  !!!!!!!!!!!!
-#  ATTEMPT (not try for more than like 6 hrs) to make a GUI for this (too tired out after finishing probably wont do)
-#  ATTEMPT (not try for more than like 2 hrs) to remove global variables for this:
-#     remove global variables for return values if possible, possible interference if not (also not very bothered about this)
-#
-
 import os # OS interacting Function
 import sys # System calls function
 import re # Regular expression function (regex)
 import traceback # Error handling function
 import base64 # Base64 encoding algorithm
 import time # Time logic function
+import getpass # Hidden Input function (using pwinput is better but this is more portable, universal + super epic linux sudo style password input...)
 from cryptography.fernet import Fernet # Encryption algorithm
 from cryptography.hazmat.primitives import hashes # Hashing algorithm
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC # Key derivation function
@@ -120,7 +111,7 @@ def logincheck():
 
 def passwordrequest(): # password request function for login (simply made a separate function cuz of conflicts)
     global passwinput
-    passwinput = input("Enter password: ")
+    passwinput = getpass.getpass("Enter password: ")
     logincheck()  # calling logincheck function through passwordrequest function to avoid loop conflict
     
 def decrypt():  ## parse before logincheck() # decryption function for login
@@ -153,8 +144,14 @@ def decrypt():  ## parse before logincheck() # decryption function for login
 def login(): # depricated and not needed, used only as a header and to declare loop off to avoid loop of header
     global token, passwinput, userinput
     menuactive = False
-    print("""Login
-    """)
+    if os.path.exists(keyloc):
+        print("""Login
+        """)
+        return
+    else:
+        print("""Register first
+        """)
+        returnfunc()
     return
 
 def returnfunc():
@@ -174,8 +171,8 @@ def register():
     print("""Register
     """)
     username = input("Enter username: ") # username input
-    password = input("Enter password: ") # password input
-    password2 = input("Enter password again: ") # double password input
+    password = getpass.getpass("Enter password: ") # password input
+    password2 = getpass.getpass("Enter password again: ") # double password input
     if any(elem in username for elem in illegalcharacters): # checking if username contains illegal characters
         print("""Illegal characters in username
         """)
